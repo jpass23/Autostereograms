@@ -1,0 +1,14 @@
+% function shifts = calcShift(depthMap)
+%     
+% end
+
+I = imread("pattern.png");
+imshow(repeatIm(I))
+
+function repeated = repeatIm(im)
+    repVal = 6;
+    repeated = ones(size(im,1),repVal*size(im,2),size(im,3));
+    for i = 1:repVal
+        repeated(:,(i-1)*size(im,2)+1:i*size(im,2),:) = im;
+    end
+end
