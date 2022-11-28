@@ -1,18 +1,20 @@
 im = imread("Test.png");
 pattern = imread("pattern.png");
-depthBruh = edgeDetect(im);
+im2 = imread("Test2.jpeg");
+depthBruh = edgeDetect(im2);
+imshow(depthBruh);
 
 %function depthMap = outline(im)
 function depthMap = edgeDetect(im)
     grayIm = im2gray(im);
-    blurred = imfilter(grayIm,fspecial('gaussian',6,1));
+    blurred = imfilter(grayIm,fspecial('gaussian',20,10));
     gradY = double(imfilter(blurred,fspecial('sobel')));
     gradX = double(imfilter(blurred,fspecial('sobel').'));
 
     magnitude = sqrt(gradY.^2 + gradX.^2);
-    threshold = prctile(magnitude,90,"all");
+    threshold = prctile(magnitude,97,"all");
 
-    edges = double(magnitude > threshold)
+    edges = double(magnitude > threshold);
     depthMap = edges;
     
 end
