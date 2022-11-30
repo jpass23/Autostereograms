@@ -42,7 +42,19 @@ letters(:,:,23) = [1 1 1 1; 1 0 0 1; 1 1 1 1; 1 0 0 0; 1 0 0 0;]; %W ~
 letters(:,:,24) = [1 1 1 1; 1 0 0 1; 1 1 1 1; 1 0 0 0; 1 0 0 0;]; %X ~
 letters(:,:,25) = [1 1 1 1; 1 0 0 1; 1 1 1 1; 1 0 0 0; 1 0 0 0;]; %Y ~
 letters(:,:,26) = [1 1 1 1; 0 0 1 0; 0 1 0 0; 1 0 0 0; 1 1 1 1;]; %Z
-letter = letters(:,:,7);
+
+word = "J;a;d;e;n";
+makeDepthMap(letters, word);
+
+function depthMap = makeDepthMap(letters, word) 
+    alphabet = ['A' 'B' 'C' 'D' 'E' 'F' 'G' 'H' 'I' 'J' 'K' 'L' 'M' 'N' 'O' 'P' 'Q' 'R' 'S' 'T' 'U'' V' 'W' 'X' 'Y' 'Z'];
+    word = split(word,";");
+    
+    for i = word
+        disp(i)
+    end
+    %depthMap = letters(:,:,firstLetter);
+end
 
 function largeLetter = enlarge(letter, mult)
     largeLetter = zeros(mult*size(letter,1), mult*size(letter,2));
