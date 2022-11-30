@@ -1,11 +1,21 @@
 im = imread("squirrel.jpeg");
 pattern = imread("pattern2.jpeg");
-depthBruh = edgeDetect(im2);
+im2 = imread("face.jpeg");
+%depthBruh = edgeDetect(im2);
 %imshow(depthBruh);
+
 %figure; imshow(im2);
-newPattern = compress(im, im2);
-%figure; imshow(newPattern);
-%stretch(im, im2);
+newPattern = compress(im, im2, 10);
+
+%figure(1); imshow(newPattern)
+fullPattern = patternCast(im, newPattern);
+
+%figure(1); imshow(fullPattern)
+gram = stereogram(im,fullPattern,15);
+
+%figure(2); imshow(gram)
+animate(fullPattern,gram);
+
 letters = [0 1 1 0; 1 0 0 1 ; 1 1 1 1; 1 0 0 1; 1 0 0 1];
 letters(:,:,2) = [1 1 1 0; 1 0 0 1; 1 1 1 0; 1 0 0 1; 1 1 1 0;]; %B
 letters(:,:,3) = [0 1 1 1; 1 0 0 0; 1 0 0 0; 1 0 0 0; 0 1 1 1;]; %C
@@ -33,7 +43,6 @@ letters(:,:,24) = [1 1 1 1; 1 0 0 1; 1 1 1 1; 1 0 0 0; 1 0 0 0;]; %X ~
 letters(:,:,25) = [1 1 1 1; 1 0 0 1; 1 1 1 1; 1 0 0 0; 1 0 0 0;]; %Y ~
 letters(:,:,26) = [1 1 1 1; 0 0 1 0; 0 1 0 0; 1 0 0 0; 1 1 1 1;]; %Z
 letter = letters(:,:,7);
-imshow(enlarge(letter,50))
 
 function largeLetter = enlarge(letter, mult)
     largeLetter = zeros(mult*size(letter,1), mult*size(letter,2));
@@ -59,11 +68,11 @@ function depthMap = edgeDetect(im)
     
 end
 %function pattern = stretch(depthMap, pattern)
-function pattern = compress(depthMap, im)
+function pattern = compress(depthMap, im, numRepeats)
     width = size(depthMap,2);
     im_height = size(im,1);
     im_width = size(im,2);
-    pattern_width = floor(width/6);
+    pattern_width = floor(width/numRepeats);
     pattern = zeros(im_height,pattern_width,3);
     compressAmt = floor(im_width/pattern_width);
     for i = 1:pattern_width
@@ -86,8 +95,10 @@ function fullPattern = patternCast(depthMap, pattern)
             fullPattern(i,j,:) = pattern(iMod, jMod,:);
         end
     end
-    fullPattern = imfilter(fullPattern,fspecial("gaussian",6,1));
-    fullPattern = uint8(fullPattern);
+    fullPattern = imgaussfilt(fullPattern,5);
+
+    %Might need to uncomment this in some cases for bad pictures
+    %fullPattern = uint8(fullPattern);
 end
 %function autoGram = stereogram(depthMap, fullPattern)
 function autoGram = stereogram(depthMap, fullPattern, shiftMult)
@@ -102,7 +113,7 @@ function autoGram = stereogram(depthMap, fullPattern, shiftMult)
             autoGram(i,j,:) = fullPattern(i,jShift,:);
         end
      end
-    autoGram = imfilter(autoGram,fspecial("gaussian",3,1));
+    autoGram = imgaussfilt(autoGram,2);
 end
 %function animated = animate(fullPattern, autoGram)
 function animate(fullPattern,autoGram)
