@@ -56,12 +56,16 @@ end
 
 %function pattern = compress(depthMap, pattern)
 function pattern = compress(depthMap, im, numRepeats)
+    %Gets sizes of images
     width = size(depthMap,2);
     im_height = size(im,1);
     im_width = size(im,2);
-    pattern_width = floor(width/numRepeats);
-    pattern = zeros(im_height,pattern_width,3);
-    compressAmt = floor(im_width/pattern_width);
+    pattern_width = floor(width/numRepeats); %Gets the width of the final pattern based on numRepeats
+    pattern = zeros(im_height,pattern_width,3); %Creates the pattern
+    compressAmt = floor(im_width/pattern_width); 
+    %This loops through and cuts out the correct number of collumns so that
+    %the image looks stretched/destorted and will work as a background
+    %image
     for i = 1:pattern_width
         pattern(:,i,:) = im(:,i*compressAmt,:);
     end
