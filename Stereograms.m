@@ -1,4 +1,9 @@
 %-------------------------------------
+%{   
+
+This only works with the images we have for each of the letters. Since we
+couldn't submit all of thsoe, we left this commented out. 
+
 word = {'B', 'R', 'U', 'H'};
 s=4;
 wordPattern = im2double(imread("wordPattern.jpeg"));
@@ -10,30 +15,25 @@ imwrite(wordFullPattern,"wordFullPattern.jpeg")
 wordGram = stereogram(wordDepthMap,wordFullPattern,15,2);
 %figure(1); imshow(wordGram);
 animate(imgaussfilt(wordFullPattern,2),wordGram,"wordGif.gif");
-
-
+%}
 %-----------------------------------------
-map1 = imread("squirrel.jpeg");
-custIm = imread("jaden.jpeg");
-custIm = imresize(custIm,0.125);
+map1 = imread("https://i.postimg.cc/0jySTZ1M/squirrel.png");
+custIm = imread("https://i.postimg.cc/6pXWTqTz/jaden.jpg");
 
 newPattern = compress(map1, custIm, 10);
-%figure(1); imshow(newPattern)
 fullPattern = patternCast(im, newPattern);
-%figure(1); imshow(fullPattern)
 gram = stereogram(im,fullPattern,25,2);
-%figure(2); imshow(gram)
-animate(imgaussfilt(fullPattern,2),gram,"picturePattern.gif");
-%animate(fullPattern,gram,"picturePattern.gif");
+figure(1); imshow(gram)
+
+%%%%%   Uncomment line below to save gif file to folder   %%%%%
+%animate(imgaussfilt(fullPattern,2),gram,"picturePattern.gif"); 
 
 %-------------------------------------------
-shark = im2double(imread("shark.png"));
-pattern = im2double(imread("pattern2.jpeg"));
+shark = im2double(imread("https://i.postimg.cc/pdVnhqy0/shark.png"));
+pattern = im2double(imread("https://i.postimg.cc/xdgTwQf5/pattern2.png"));
 fullPattern2 = patternCast(shark,pattern);
 sharkGram = stereogram(shark,fullPattern2,15,2);
-imwrite(sharkGram,'sharkGram.jpeg')
-
-
+figure(2); imshow(sharkGram)
 
 function depthMap = makeWordDepthMap(word,s) 
     alphabet = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
@@ -87,6 +87,7 @@ function fullPattern = patternCast(depthMap, pattern)
     %Might need to uncomment this in some cases for bad pictures
     %fullPattern = uint8(fullPattern);
 end
+
 %function autoGram = stereogram(depthMap, fullPattern)
 function autoGram = stereogram(depthMap, fullPattern, shiftMult,blurAmount)
     depthNorm = double(im2gray(depthMap));
@@ -102,6 +103,7 @@ function autoGram = stereogram(depthMap, fullPattern, shiftMult,blurAmount)
      end
     autoGram = imgaussfilt(autoGram,blurAmount);
 end
+
 %function animated = animate(fullPattern, autoGram)
 function animate(fullPattern,autoGram,filename)
     [A1,map1] = rgb2ind(fullPattern,256);
