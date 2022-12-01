@@ -29,11 +29,15 @@ shark = im2double(imread("shark.png"));
 pattern = im2double(imread("pattern2.jpeg"));
 fullPattern2 = patternCast(shark,pattern);
 sharkGram = stereogram(shark,fullPattern2,15,2);
-figure(2); imshow(sharkGram,'sharkGram.jpeg')
+imwrite(sharkGram,'sharkGram.jpeg')
+
+
 
 function depthMap = makeWordDepthMap(word,s) 
+    %Initialize an alphabet that will enable us to get the index of a
+    %letter from 1-26 so that we can pull the right image
     alphabet = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-    indexArray = contains(alphabet,word{1});
+    indexArray = contains(alphabet,word{1}); %Cell array function we googled
     ind = find(indexArray==1); %#ok<NASGU> 
     letterFilename = [word{1} '.jpeg'];
     %disp(class(letterFilename));
@@ -41,9 +45,7 @@ function depthMap = makeWordDepthMap(word,s)
     for i = 2:s
         letterFilename = [word{i} '.jpeg'];
         letterIm = imread(letterFilename);
-        %depthMap = imfuse(depthMap,letterIm,'montage');
-        %disp(size(letterIm))
-        %disp(size(depthMap))
+        %Here we concatenated the letter images together
         depthMap = cat(2,depthMap,letterIm);
 
     end
@@ -70,29 +72,42 @@ function fullPattern = patternCast(depthMap, pattern)
     width = size(depthMap,2);
     patH = size(pattern,1);
     patW = size(pattern,2);
+    %Initialize an empty array that we will fill with values from the
+    %full background pattern
     fullPattern = zeros(height,width,3);
     for i=1:height
         for j=1:width
+            %This mod trick is cool. We made it so that the indexes for the
+            %pattern array repeat once we exceed them.
             iMod = mod(i,patH) + 1;
             jMod = mod(j,patW) + 1;
+            %We had to make sure that we took all 3 color channels with
+            %this indexing technique
             fullPattern(i,j,:) = pattern(iMod, jMod,:);
         end
     end
-    %fullPattern = imgaussfilt(fullPattern,2);
 
-    %Might need to uncomment this in some cases for bad pictures
+    %Might need to uncomment this in some cases for bad pictures that are
+    %just made of uint8 values. This was one of the complications we ran
+    %into with this method and an easy fix.
     %fullPattern = uint8(fullPattern);
 end
 
 %function autoGram = stereogram(depthMap, fullPattern)
 function autoGram = stereogram(depthMap, fullPattern, shiftMult,blurAmount)
+    %First we normalized the depth map so that nothing was greater than 1
     depthNorm = double(im2gray(depthMap));
     depthNorm = depthNorm ./ max(depthNorm(:));
     height = size(depthMap,1);
     width = size(depthMap,2);
+    %At first the stereogram is just the background pattern
     autoGram = fullPattern;
+    %This for loop shifts the specific values of the background where the
+    %depth map is greater than 0 or where there is an object that we are
+    %trying to hide in the stereogram.
      for i=1:height
         for j=1:width
+            %This 
             jShift = j + floor(depthNorm(i,j) * shiftMult);
             autoGram(i,j,:) = fullPattern(i,jShift,:);
         end
