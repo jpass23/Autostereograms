@@ -1,59 +1,63 @@
 im = imread("squirrel.jpeg");
 pattern = imread("pattern2.jpeg");
 im2 = imread("face.jpeg");
-%depthBruh = edgeDetect(im2);
-%imshow(depthBruh);
+letterPics = {'A.jpeg', 'B.jpeg', 'C.jpeg', 'D.jpeg', 'E.jpeg', 'F.jpeg'...
+    'G.jpeg', 'H.jpeg', 'I.jpeg', 'J.jpeg', 'K.jpeg', 'L.jpeg', 'M.jpeg'...
+    'N.jpeg', 'O.jpeg', 'P.jpeg', 'Q.jpeg', 'R.jpeg', 'S.jpeg', 'T.jpeg'...
+    'U.jpeg', 'V.jpeg', 'X.jpeg', 'Y.jpeg', 'Z.jpeg'};
+
+word = {'J', 'A', 'D', 'E', 'N'};
+s = 5;
+temp = letterPics{1}
+wordPattern = imread("wordPattern.jpeg");
+figure(1); imshow(wordPattern);
+wordDepthMap = makeWordDepthMap(letterPics,word,s);
+figure(2); imshow(wordDepthMap);
+wordFullPattern = patternCast(wordDepthMap,wordPattern);
+wordGram = stereogram(wordDepthMap,wordFullPattern,10);
+animate(wordFullPattern,wordGram,"wordGif.gif");
+
 
 %figure; imshow(im2);
-newPattern = compress(im, im2, 10);
+%newPattern = compress(im, im2, 10);
 
 %figure(1); imshow(newPattern)
-fullPattern = patternCast(im, newPattern);
+%fullPattern = patternCast(im, newPattern);
 
 %figure(1); imshow(fullPattern)
-gram = stereogram(im,fullPattern,15);
+%gram = stereogram(im,fullPattern,15);
 
 %figure(2); imshow(gram)
-animate(fullPattern,gram);
+%animate(fullPattern,gram);
 
-letters = [0 1 1 0; 1 0 0 1 ; 1 1 1 1; 1 0 0 1; 1 0 0 1];
-letters(:,:,2) = [1 1 1 0; 1 0 0 1; 1 1 1 0; 1 0 0 1; 1 1 1 0;]; %B
-letters(:,:,3) = [0 1 1 1; 1 0 0 0; 1 0 0 0; 1 0 0 0; 0 1 1 1;]; %C
-letters(:,:,4) = [1 1 1 0; 1 0 0 1; 1 0 0 1; 1 0 0 1; 1 1 1 0;]; %D
-letters(:,:,5) = [1 1 1 1; 1 0 0 0; 1 1 1 1; 1 0 0 0; 1 1 1 1;]; %E
-letters(:,:,6) = [1 1 1 1; 1 0 0 0; 1 1 1 1; 1 0 0 0; 1 0 0 0;]; %F
-letters(:,:,7) = [0 1 1 1; 1 0 0 0; 1 0 1 1; 1 0 0 1; 0 1 1 1;]; %G
-letters(:,:,8) = [1 0 0 1; 1 0 0 1; 1 1 1 1; 1 0 0 1; 1 0 0 1;]; %H
-letters(:,:,9) = [1 1 1 1; 0 1 1 0; 0 1 1 0; 0 1 1 0; 1 1 1 1;]; %I
-letters(:,:,10) = [1 1 1 1; 0 0 1 0; 0 0 1 0; 1 0 1 0; 0 1 0 0;]; %J
-letters(:,:,11) = [1 0 0 1; 1 0 1 0; 1 1 0 0; 1 0 1 0; 1 0 0 1;]; %K
-letters(:,:,12) = [1 0 0 0; 1 0 0 0; 1 0 0 0; 1 0 0 0; 1 1 1 0;]; %L
-letters(:,:,13) = [1 0 0 1; 1 0 1 0; 1 1 0 0; 1 0 1 0; 1 0 0 1;]; %M ~
-letters(:,:,14) = [1 0 0 1; 1 1 0 1; 1 0 1 1; 1 0 0 1; 1 0 0 1;]; %N
-letters(:,:,15) = [0 1 1 0; 1 0 0 1; 1 0 0 1; 1 0 0 1; 0 1 1 0;]; %O
-letters(:,:,16) = [1 1 1 0; 1 0 0 1; 1 1 1 0; 1 0 0 0; 1 0 0 0;]; %P
-letters(:,:,17) = [1 1 1 1; 1 0 0 1; 1 1 1 1; 1 0 0 0; 1 0 0 0;]; %Q ~
-letters(:,:,18) = [1 1 1 0; 1 0 0 1; 1 1 1 0; 1 0 1 0; 1 0 0 1;]; %R
-letters(:,:,19) = [1 1 1 1; 1 0 0 0; 1 1 1 1; 0 0 0 1; 1 1 1 1;]; %S
-letters(:,:,20) = [1 1 1 1; 0 1 1 0; 0 1 1 0; 0 1 1 0; 0 1 1 0;]; %T
-letters(:,:,21) = [0 0 0 0; 1 0 0 1; 1 0 0 1; 1 0 0 1; 0 1 1 0;]; %U
-letters(:,:,22) = [1 1 1 1; 1 0 0 1; 1 1 1 1; 1 0 0 0; 1 0 0 0;]; %V ~
-letters(:,:,23) = [1 1 1 1; 1 0 0 1; 1 1 1 1; 1 0 0 0; 1 0 0 0;]; %W ~
-letters(:,:,24) = [1 1 1 1; 1 0 0 1; 1 1 1 1; 1 0 0 0; 1 0 0 0;]; %X ~
-letters(:,:,25) = [1 1 1 1; 1 0 0 1; 1 1 1 1; 1 0 0 0; 1 0 0 0;]; %Y ~
-letters(:,:,26) = [1 1 1 1; 0 0 1 0; 0 1 0 0; 1 0 0 0; 1 1 1 1;]; %Z
 
-word = "J;a;d;e;n";
-makeDepthMap(letters, word);
 
-function depthMap = makeDepthMap(letters, word) 
-    alphabet = ['A' 'B' 'C' 'D' 'E' 'F' 'G' 'H' 'I' 'J' 'K' 'L' 'M' 'N' 'O' 'P' 'Q' 'R' 'S' 'T' 'U'' V' 'W' 'X' 'Y' 'Z'];
-    word = split(word,";");
-    
-    for i = word
-        disp(i)
+
+
+function depthMap = makeWordDepthMap(letterPics, word,s) 
+    alphabet = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+    indexArray = contains(alphabet,word{1});
+    letterFilename = letterPics(indexArray)
+    name = letterFilename{1}
+    depthMap = imread(name);
+    for i = 1:s-1
+        letter = word{i};
+        indexArray2 = contains(alphabet,letter);
+        letterIm = imread(letterPics(indexArray2));
+        %depthMap = imfuse(depthMap,letterIm,'montage');
+        depthMap = cat(2,depthMap,letterIm);
+
     end
-    %depthMap = letters(:,:,firstLetter);
+  
+end
+
+function index = findIndex(A,letter)
+    index = 1;
+    for i=1:size(A)
+        if A(i) == letter
+            index = i;
+        end
+    end
 end
 
 function largeLetter = enlarge(letter, mult)
@@ -128,8 +132,7 @@ function autoGram = stereogram(depthMap, fullPattern, shiftMult)
     autoGram = imgaussfilt(autoGram,2);
 end
 %function animated = animate(fullPattern, autoGram)
-function animate(fullPattern,autoGram)
-    filename = "testAnimated.gif"; % Specify the output file name
+function animate(fullPattern,autoGram,filename)
     [A1,map1] = rgb2ind(fullPattern,256);
     [A2,map2] = rgb2ind(autoGram,256);
     imwrite(A1,map1,filename,"gif","LoopCount",Inf,"DelayTime",0.1);
